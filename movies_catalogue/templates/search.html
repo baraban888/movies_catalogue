@@ -1,0 +1,22 @@
+{% extends "index.html" %}
+
+{% block content %}
+  <h3 class="mb-3">Wyniki dla: “{{ q }}”</h3>
+  <div class="row">
+    {% for m in results %}
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card h-100">
+          <a href="{{ url_for('movie_details', movie_id=m.id) }}">
+            <img class="card-img-top" src="{{ get_poster(m.poster_path) }}" alt="{{ m.title }}">
+          </a>
+          <div class="card-body">
+            <h6 class="card-title">{{ m.title }}</h6>
+            <p class="card-text text-muted">{{ m.release_date }}</p>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <p class="text-muted">Brak wyników.</p>
+    {% endfor %}
+  </div>
+{% endblock %}

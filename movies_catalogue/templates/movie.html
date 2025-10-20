@@ -1,0 +1,16 @@
+{% extends "index.html" %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-4">
+      <img class="img-fluid rounded mb-3" src="{{ get_poster(movie.poster_path, 'w500') }}" alt="{{ movie.title }}">
+    </div>
+    <div class="col-md-8">
+      <h2>{{ movie.title }}</h2>
+      <p class="text-muted">Premiera: {{ movie.release_date }}</p>
+      <p>{{ movie.overview }}</p>
+      <p><span class="badge text-bg-secondary">Ocena: {{ movie.vote_average }}</span></p>
+      <a class="btn btn-outline-secondary" href="https://www.themoviedb.org/movie/{{ movie.id }}" target="_blank">TMDB</a>
+    </div>
+  </div>
+{% endblock %}

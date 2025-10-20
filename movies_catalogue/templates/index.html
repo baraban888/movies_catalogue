@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Biblioteka filmów</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body class="bg-light">
+
+    <!-- 🔹 Навігація -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="#">Start Bootstrap</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Services</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+{% block content %}
+      <!-- Page Content -->
+  <div class="container mt-5">
+    <h1 class="text-center text-primary mb-4">Biblioteka filmów</h1>
+    <p class="text-center text-muted mb-5">Witaj w mojej bibliotece filmów!</p>
+  <!-- Сітка для карток -->
+    <div id="movie-grid" class="row"></div>
+    <!-- 🔹 JS: Завантаження фільмів -->
+  <script>
+  // ВСТАВ СВІЙ v4 Read Access Token БЕЗ лапок/пробілів зайвих
+  const TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5YTEzY2Y2MWY1NWNjZmQ0NWFjNDRjMzMxYzMyNzFlMyIsIm5iZiI6MTc2MDQ3MTAyMC4wMzAwMDAyLCJzdWIiOiI2OGVlYTdlYzk2ZTJhZDZlMGNmMDllYzciLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.yVUCBHY0AxxKR6UI4clddk_-DnO7tcuQwPD8tlPWbos";
+  async function loadMovies() {
+    const grid = document.getElementById("movie-grid");
+    grid.innerHTML = "<p class='text-muted'>Ładowanie…</p>";
+
+    try {
+      const res = await fetch("https://api.themoviedb.org/3/movie/popular?language=pl-PL", {
+        headers: {
+          "accept": "application/json",
+          "Authorization": `Bearer ${TOKEN}`
+        }
+      });
+
+      // Діагностика
+      console.log("status:", res.status, res.statusText);
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error("TMDb error body:", errText);
+        grid.innerHTML = `<p class="text-danger">Błąd ${res.status}: ${res.statusText}</p>`;
+        return;
+      }
+
+      const data = await res.json();
+      grid.innerHTML = "";
+      (data.results || []).slice(0, 8).forEach(m => {
+        const col = document.createElement("div");
+        col.className = "col-lg-3 col-md-6 mb-4";
+        col.innerHTML = `
+          <div class="card h-100 shadow-sm">
+            <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" class="card-img-top" alt="${m.title}">
+            <div class="card-body">
+              <h5 class="card-title">${m.title}</h5>
+              <p class="card-text text-muted">${m.release_date || ""}</p>
+              <a class="btn btn-primary" href="https://www.themoviedb.org/movie/${m.id}" target="_blank">Szczegóły</a>
+            </div>
+          </div>`;
+        grid.appendChild(col);
+      });
+
+      if (!data.results || data.results.length === 0) {
+        grid.innerHTML = `<p class="text-warning">Brak wyników.</p>`;
+      }
+
+    } catch (e) {
+      console.error("Fetch failed:", e);
+      grid.innerHTML = "<p class='text-danger'>Nie udało się załadować filmów (network/CORS).</p>";
+    }
+  }
+
+  loadMovies();
+    </script>
+  </div>
+  {% endblock %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
+

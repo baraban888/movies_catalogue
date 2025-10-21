@@ -6,7 +6,7 @@ app = Flask(__name__)
 @app.route("/")
 def homepage():
     list_type = request.args.get("list_type", "popular")  # popular | top_rated | upcoming | now_playing
-    movies = tmdb_client.get_movies(list_type=list_type)
+    movies = tmdb_client.get_random_movies(list_type=list_type)
     return render_template("homepage.html", movies=movies, list_type=list_type, get_poster=tmdb_client.get_poster_url)
 
 @app.route("/movie/<int:movie_id>")

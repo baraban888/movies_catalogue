@@ -1,6 +1,7 @@
 import os
 import requests
 from dotenv import load_dotenv
+import random
 
 load_dotenv()
 API_TOKEN = os.getenv("TMDB_API_TOKEN")
@@ -20,6 +21,11 @@ def get_movies(list_type="popular", language="pl-PL", page=1):
     resp = requests.get(url, headers=_headers(), params={"language": language, "page": page}, timeout=10)
     resp.raise_for_status()
     return resp.json()["results"]
+
+def get_random_movies(how_many=8, list_type="popular", language="pl-PL", page=1):
+    movies = get_movies(list_type=list_type, language=language, page=page)  # это уже список!
+    random.shuffle(movies)
+    return movies[:how_many]
 
 def get_movie_details(movie_id, language="pl-PL"):
     url = f"{BASE_URL}/movie/{movie_id}"

@@ -41,7 +41,47 @@ def search_movie(query, language="pl-PL", page=1):
     resp.raise_for_status()
     return resp.json()["results"]
 
+def get_single_movie(movie_id):
+    endpoint = f"{BASE_URL}/movie/{movie_id}"
+    headers = _headers()
+    response = requests.get(endpoint, headers=headers)
+    response.raise_for_status()
+    return response.json()
+
+def get_movie_credits(movie_id):
+    url = f"{BASE_URL}/movie/{movie_id}"
+    resp = requests.get(url, headers=_headers())
+    resp.raise_for_status()
+    return resp.json()
+
+def get_movie_images(movie_id):
+    url = f"{BASE_URL}/movie/{movie_id}/images"
+    resp = requests.get(url, headers=_headers())
+    resp.raise_for_status()
+    return resp.json()
+
+def get_movies_list(list_name):
+    endpoint = f"{BASE_URL}/movie/{list_name}"
+    headers = _headers()
+    response = requests.get(endpoint, headers=headers)
+    response.raise_for_status()
+    data = response.json()
+    return data["results"]
+
+def get_random_backdrop(movie_id):
+    images = get_movie_images(movie_id)
+    backdrops = images.get("backdrops")
+    if not backdrops:
+        return None
+    chosen = random.choice(backdrops)
+    return f"https://image.tmdb.org/t/p/w780{chosen['file_path']}"
+
 def get_poster_url(path, size="w500"):
     if not path:
         return ""
+    return f"https://image.tmdb.org/t/p/{size}{path}"
+
+def get_profile_url(path, size="w185"):
+    if not path:
+        return ""          # можно вернуть placeholder, если хочешь
     return f"https://image.tmdb.org/t/p/{size}{path}"

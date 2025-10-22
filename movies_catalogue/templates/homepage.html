@@ -1,6 +1,7 @@
 {% extends "index.html" %}
 
 {% block content %}
+
   <h1 class="text-primary text-center mb-4">Biblioteka filmów</h1>
 
   <form class="mb-4 d-flex gap-2" action="{{ url_for('search') }}" method="get">
@@ -9,27 +10,29 @@
   </form>
 
   <div class="btn-group mb-4">
-    {% for t in ["popular","top_rated","now_playing","upcoming"] %}
-      <a class="btn btn-outline-secondary {% if list_type==t %}active{% endif %}" href="{{ url_for('homepage', list_type=t) }}">{{ t }}</a>
+    {% for key, label in movie_lists.items()%}
+    <a href="/?list_type={{ key}}"
+    class="btn btn-outline-primary {% if current_list == key %}active{% endif %}">{{ label }}</a>
     {% endfor %}
   </div>
 
   <div class="row">
     {% for m in movies[:8] %}
       <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card h-100">
-          <a href="{{ url_for('movie_details', movie_id=m.id) }}">
-            <img class="card-img-top" src="{{ get_poster(m.poster_path) }}" alt="{{ m.title }}">
-          </a>
-          <div class="card-body">
-            <h5 class="card-title">{{ m.title }}</h5>
-            <p class="card-text text-muted">{{ m.release_date }}</p>
-          </div>
-          <div class="card-footer text-center">
-            <a class="btn btn-primary" href="{{ url_for('movie_details', movie_id=m.id) }}">Szczegóły</a>
-          </div>
+      <div class="card h-100">
+        <a href="{{ url_for('movie_details', movie_id=m.id) }}">
+          <img class="card-img-top" src="{{ get_poster(m.poster_path) or '' }}" alt="{{ m.title }}">
+        </a>
+        <div class="card-body">
+          <h5 class="card-title">{{ m.title }}</h5>
+          {% if m.release_date %}
+          <p class="text-muted">{{ m.release_date }}</p>
+          {% endif %}
+          <a class="btn btn-primary"
+             href="{{ url_for('movie_details', movie_id=m.id) }}">Pokaż więcej</a>
         </div>
       </div>
+    </div>
     {% endfor %}
   </div>
 {% endblock %}

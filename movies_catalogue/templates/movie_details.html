@@ -1,0 +1,51 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="container">
+  <h1 class="my-4">{{ movie.title }}</h1>
+
+  <div class="row">
+    <div class="col-md-8">
+
+      <img class="img-fluid"
+     src="{{ backdrop or 'https://placehold.co/780x440?text=No+Backdrop' }}"
+     alt="{{ movie.title }}">
+
+    </div>
+    <div class="col-md-4">
+      <h3>{{ movie.tagline }}</h3>
+      <p>{{ movie.overview }}</p>
+      <dl>
+  {% if movie.budget %}   {# 0 считается False, так что для 0 уйдёт в else #}
+    <p><strong>Budget:</strong> ${{ "{:,}".format(movie.budget) }}</p>
+  {% else %}
+    <p>Budget:<strong></strong> Brak wynikow</p>
+  {% endif %}
+
+  <dt>Genres</dt>
+  <dd>
+    {% for genre in movie.genres %}
+      {{ genre.name }}{% if not loop.last %}, {% endif %}
+    {% endfor %}
+  </dd>
+</dl>
+<h3 class="my-4">Cast</h3>
+
+{% if cast %}
+  <div class="row">
+    {% for person in cast %}
+      <div class="col-md-3 col-sm-4 mb-4 text-center">
+        <img class="img-fluid rounded mb-2"
+             src="{{ get_profile(person.profile_path) }}"
+             alt="{{ person.name }}">
+        <div>{{ person.name }}</div>
+        {% if person.character %}<small class="text-muted">{{ person.character }}</small>{% endif %}
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="text-muted">Brak informacji o&nbsp;obsadzie tego filmu.</p>
+{% endif %}
+
+
+{% endblock %}

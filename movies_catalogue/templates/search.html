@@ -1,22 +1,31 @@
 {% extends "index.html" %}
 
 {% block content %}
-  <h3 class="mb-3">Wyniki dla: “{{ q }}”</h3>
-  <div class="row">
-    {% for m in results %}
-      <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card h-100">
-          <a href="{{ url_for('movie_details', movie_id=m.id) }}">
+<h2>Wyniki dla: "{{ q }}"</h2>
+
+<div class="row">
+  {% for m in results %}
+    <div class="col-md-4 mb-4">
+      <div class="card h-100">
+        <a href="{{ url_for('movie_details', movie_id=m.id) }}">
+          {% if m.poster_path %}
             <img class="card-img-top" src="{{ get_poster(m.poster_path) }}" alt="{{ m.title }}">
-          </a>
-          <div class="card-body">
-            <h6 class="card-title">{{ m.title }}</h6>
-            <p class="card-text text-muted">{{ m.release_date }}</p>
-          </div>
+          {% else %}
+            <div class="d-flex align-items-center justify-content-center bg-light" style="height: 278px;">
+              <span class="text-muted">No image</span>
+            </div>
+          {% endif %}
+        </a>
+        <div class="card-body">
+          <h5 class="card-title">
+            <a href="{{ url_for('movie_details', movie_id=m.id) }}">{{ m.title }}</a>
+          </h5>
+          {% if m.release_date %}
+          <p class="card-text text-muted">{{ m.release_date }}</p>
+          {% endif %}
         </div>
       </div>
-    {% else %}
-      <p class="text-muted">Brak wyników.</p>
-    {% endfor %}
-  </div>
+    </div>
+  {% endfor %}
+</div>
 {% endblock %}

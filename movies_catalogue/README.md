@@ -1,16 +1,66 @@
-# 🎬 Movies Catalogue
+# 🎬 Katalog filmów
 
-A simple web application built with Flask and TMDb API which allows users to browse, search and view movie details. The project was created as part of the Kodilla Bootcamp. The application displays movie lists (Popular, Top Rated, Upcoming, Now Playing), allows searching by title, and shows detailed information for each film including poster or random backdrop, title, tagline, overview, budget, genres and cast list (if available). Missing data such as empty cast or undefined budget are handled gracefully. The interface is fully responsive and based on Bootstrap 5.
+Aplikacja stworzona w ramach kursu **Kodilla Bootcamp – Python Developer**, służąca do przeglądania filmów i seriali z bazy **The Movie Database (TMDb)**.  
+Umożliwia wyszukiwanie, wyświetlanie szczegółów filmów, przeglądanie aktualnie emitowanych seriali oraz dodawanie pozycji do listy ulubionych.
 
-## Installation and Run
-Clone the repository using `git clone https://github.com/yourusername/movies_catalogue.git` and open the folder `movies_catalogue`. Create and activate a virtual environment using `python -m venv venv` and then `venv\Scripts\activate` (on Windows) or `source venv/bin/activate` (on Linux/Mac). Install dependencies with `pip install -r requirements.txt`. Create a `.env` file in the project root and add your TMDb API key in the form `TMDB_API_TOKEN=your_api_token_here`. Run the application using `python main.py` and open `http://127.0.0.1:5000` in your browser.
+---
 
-## Technologies
-Python 3.12, Flask, Jinja2 Templates, TMDb API, Bootstrap 5, HTML, CSS.
+## 🚀 Funkcjonalności
 
-## Author
-Created by **Dmytro Bahatiuk (Alex)** — Nowa Sól, Poland.  
-📧 1975bahat@gmail.com
+✅ Wyszukiwanie filmów po tytule  
+✅ Przeglądanie list: „Popularne”, „Top Rated”, „Upcoming”, „Now Playing”  
+✅ Sekcja **„TV Today”** – seriale emitowane dzisiaj  
+✅ Możliwość dodania filmu do **ulubionych (⭐ Favorites)**  
+✅ Responsywny interfejs oparty o **Bootstrap 5**  
+✅ Integracja z API **TheMovieDB**  
 
-## License
-This project was created for educational purposes as part of the Kodilla Bootcamp.
+---
+
+## 🛠️ Technologie
+
+- **Python 3.12**  
+- **Flask**  
+- **HTML + Jinja2**  
+- **Bootstrap 5**  
+- **TMDb API**  
+- **dotenv**  
+
+---
+
+## ⚙️ Konfiguracja lokalna
+
+1. Sklonuj repozytorium:
+git clone https://github.com/baraban888/movies_catalogue.git
+
+Wejdź do katalogu projektu:
+cd movies_catalogue
+
+Utwórz i aktywuj środowisko wirtualne:
+python -m venv venv
+source venv/Scripts/activate   # Windows
+
+Zainstaluj wymagane biblioteki:
+pip install -r requirements.txt
+
+Utwórz plik .env i wklej swoje klucze API:
+TMDB_API_TOKEN=your_api_token
+TMDB_API_KEY=your_api_key
+
+Uruchom aplikację:
+python main.py
+
+Otwórz w przeglądarce:
+http://127.0.0.1:5000
+
+📸 Zrzuty ekranu
+Strona główna
+
+Ulubione filmy
+
+TV Today
+
+👨‍💻 Autor
+Projekt opracowany przez Dmytro Bahatiuk (Alex) w ramach kursu Kodilla.
+📧 Email: 1975bahat@gmail.com
+🌍 GitHub: baraban888
+

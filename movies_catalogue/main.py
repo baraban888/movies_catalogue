@@ -14,6 +14,8 @@ print("CWD:         ", os.getcwd())
 print("ROOT_PATH:   ", app.root_path)
 print("TEMPLATES:   ", app.jinja_loader.searchpath)
 
+FAVORITES = set()
+
 MOVIE_LISTS = {"popular": "Popular",
              "top_rated": "Top Rated",
              "upcoming": "Upcoming",
@@ -32,6 +34,20 @@ def homepage():
         movie_lists=MOVIE_LISTS,
         get_poster=tmdb_client.get_poster_url
     )
+
+@app.route("/add_to_favorites", methods=["POST"])
+def add_to_favorites():
+    movie_id = request.form.get("movie_id")
+    if movie_id:
+        FAVORITES.add(movie_id)
+    return "", 204  # відповідаємо без перезавантаження сторінки
+
+@app.route("/favorites")
+def favorites():
+    from tmdb_client import get_movie_details
+    movies = [get_movie_details(movie_id) for movie_id in FAVORITES]
+    return render_template("favorites.html", movies=movies, get_poster=tmdb_client.get_poster_url)
+
 @app.context_processor
 def inject_active_page():
     return {"active_page": request.endpoint}

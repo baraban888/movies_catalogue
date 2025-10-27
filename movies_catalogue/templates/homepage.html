@@ -1,41 +1,36 @@
 {% extends "index.html" %}
 
 {% block content %}
+  <h1 class="text-center my-4">Witaj w mojej bibliotece filmów</h1>
+  <h4 class="text-center">Znajdziesz tutaj tylko najlepsze tytuły!</h4>
 
-  <h1 class="text-primary text-center mb-4">Biblioteka filmów</h1>
-
-  <form class="mb-4 d-flex gap-2" action="{{ url_for('search') }}" method="get">
-    <input class="form-control" type="text" name="q" placeholder="Szukaj filmu…">
-    <button class="btn btn-primary" type="submit">Szukaj</button>
-  </form>
-
-  <div class="btn-group mb-4">
-    {% for key, label in movie_lists.items()%}
-    <a href="/?list_type={{ key}}"
-    class="btn btn-outline-primary {% if current_list == key %}active{% endif %}">{{ label }}</a>
+  <!-- Кнопки выбора списка -->
+  <div class="btn-group my-4">
+    {% for key, label in movie_lists.items() %}
+      <a href="/?list_type={{ key }}"
+         class="btn btn-outline-primary {% if current_list == key %}active{% endif %}">{{ label }}</a>
     {% endfor %}
   </div>
 
+  <!-- Сетка карточек фильмов -->
   <div class="row">
     {% for m in movies[:8] %}
-      <div class="col-lg-3 col-md-6 mb-4">
-      <div class="card h-100">
-        <a href="{{ url_for('movie_details', movie_id=m.id) }}">
-          <img class="card-img-top" src="{{ get_poster(m.poster_path) or '' }}" alt="{{ m.title }}">
-        </a>
-        <div class="card-body">
-          <h5 class="card-title">{{ m.title }}</h5>
-          {% if m.release_date %}
-          <p class="text-muted">{{ m.release_date }}</p>
-          {% endif %}
-          <a class="btn btn-primary"
-             href="{{ url_for('movie_details', movie_id=m.id) }}">Pokaż więcej</a>
+      <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+        <div class="card h-100">
+          <a href="{{ url_for('movie_details', movie_id=m.id) }}">
+            <img class="card-img-top" src="{{ get_poster(m.poster_path) or 'https://via.placeholder.com/300x450?text=No+Image' }}" alt="{{ m.title }}">
+          </a>
+          <div class="card-body">
+            <h5 class="card-title">{{ m.title }}</h5>
+            {% if m.release_date %}<p class="card-text text-muted">{{ m.release_date }}</p>{% endif %}
+            <a class="btn btn-primary btn-sm" href="{{ url_for('movie_details', movie_id=m.id) }}">Pokaż więcej</a>
+          </div>
         </div>
       </div>
-    </div>
     {% endfor %}
   </div>
 {% endblock %}
 
+       
 
 

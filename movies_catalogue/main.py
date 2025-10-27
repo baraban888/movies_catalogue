@@ -1,7 +1,18 @@
+import os
+from pathlib import Path
 from flask import Flask, render_template, request
 import tmdb_client
 
-app = Flask(__name__)
+BASE_DIR = Path(__file__).parent.resolve()
+
+app = Flask(
+    __name__,
+    template_folder=str(BASE_DIR / "templates"),
+    static_folder=str(BASE_DIR / "static"),
+)
+print("CWD:         ", os.getcwd())
+print("ROOT_PATH:   ", app.root_path)
+print("TEMPLATES:   ", app.jinja_loader.searchpath)
 
 MOVIE_LISTS = {"popular": "Popular",
              "top_rated": "Top Rated",
@@ -21,7 +32,9 @@ def homepage():
         movie_lists=MOVIE_LISTS,
         get_poster=tmdb_client.get_poster_url
     )
-
+@app.context_processor
+def inject_active_page():
+    return {"active_page": request.endpoint}
 
 @app.route("/movie/<int:movie_id>")
 def movie_details(movie_id):
@@ -38,12 +51,24 @@ def movie_details(movie_id):
         get_profile=tmdb_client.get_profile_url
     )
 
-
 @app.route("/search")
 def search():
     q = request.args.get("q", "").strip()
     results = tmdb_client.search_movie(q) if q else []
     return render_template("search.html", q=q, results=results, get_poster=tmdb_client.get_poster_url)
+
+@app.route("/tv_today")
+def tv_today():
+    try:
+        tv_shows = tmdb_client.get_tv_today()
+    except Exception as e:
+        print(f"Error fetching TV shows airing today: {e}")
+        tv_shows = []   
+    return render_template("tv_today.html", tv_shows=tv_shows,get_poster=tmdb_client.get_poster_url)
+
+@app.context_processor
+def inject_active_page():
+    return {"active_page": request.endpoint}
 
 if __name__ == "__main__":
     app.config["PROPAGATE_EXCEPTIONS"] = True

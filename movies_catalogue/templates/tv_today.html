@@ -1,0 +1,28 @@
+{% extends "index.html" %}
+
+{% block content %}
+  <h1 class="text-center my-4">Seriale, które lecą dziś</h1>
+
+  {% if tv_shows %}
+    <div class="row">
+      {% for show in tv_shows %}
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+          <div class="card h-100">
+            <img class="card-img-top"
+                 src="{{ get_poster(show.poster_path) }}"
+                 alt="{{ show.name }}">
+            <div class="card-body">
+              <h5 class="card-title">{{ show.name }}</h5>
+              {% if show.first_air_date %}
+                <p class="card-text text-muted">{{ show.first_air_date }}</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-muted">Brak wyników na dziś.</p>
+  {% endif %}
+{% endblock %}
+

@@ -1,91 +1,61 @@
+
 <!doctype html>
 <html lang="pl">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Biblioteka filmów</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  </head>
-  <body class="bg-light">
-{% block content %}
-    <!-- 🔹 Навігація -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container">
-        <a class="navbar-brand" href="#">Start Bootstrap</a>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Services</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
-          </ul>
-        </div>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}Katalog filmów{% endblock %}</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    /* Тёмный бар: поисковая форма по центру и компактная */
+    .navbar .search-form { max-width: 420px; width: 100%; }
+    .navbar .form-control { height: 2rem; padding: .25rem .5rem; }
+    .navbar .btn { padding: .125rem .5rem; }
+
+    /* Карточки фильмов — единые пропорции постера */
+    .card-img-top { object-fit: cover; aspect-ratio: 2 / 3; }
+
+    /* Заголовки и тексты — чёрные */
+    h1, h2, h3, h4, h5, p, dt, dd, small, .text-dark { color: #000 !important; }
+  </style>
+</head>
+<body class="bg-light">
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container">
+      <a class="navbar-brand" href="{{ url_for('homepage') }}">Katalog filmów</a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+        <ul class="navbar-nav me-2">
+          <li class="nav-item">
+            <a class="nav-link {% if active_page == 'homepage' %}active{% endif %}" href="{{ url_for('homepage') }}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if active_page == 'tv_today' %}active{% endif %}" href="{{ url_for('tv_today') }}">TV Today</a>
+          </li>
+          <!-- При желании добавьте ещё пункты -->
+        </ul>
+
+        <!-- ЕДИНСТВЕННАЯ поисковая строка (по центру) -->
+        <form class="d-flex mx-auto search-form" action="{{ url_for('search') }}" method="get" role="search">
+          <input class="form-control me-2 text-center" type="search" name="q" placeholder="Szukaj filmu..." required aria-label="Search">
+          <button class="btn btn-outline-light btn-sm" type="submit">Szukaj</button>
+        </form>
       </div>
-    </nav>
-    
-      <!-- Page Content -->
-  <div class="container mt-5">
-    <h1 class="text-center text-primary mb-4">Biblioteka filmów</h1>
-    <p class="text-center text-muted mb-5">Witaj w mojej bibliotece filmów!</p>
-  <!-- Сітка для карток -->
-    <div id="movie-grid" class="row"></div>
-    <!-- 🔹 JS: Завантаження фільмів -->
-  <script>
-  // ВСТАВ СВІЙ v4 Read Access Token БЕЗ лапок/пробілів зайвих
-  const TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5YTEzY2Y2MWY1NWNjZmQ0NWFjNDRjMzMxYzMyNzFlMyIsIm5iZiI6MTc2MDQ3MTAyMC4wMzAwMDAyLCJzdWIiOiI2OGVlYTdlYzk2ZTJhZDZlMGNmMDllYzciLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.yVUCBHY0AxxKR6UI4clddk_-DnO7tcuQwPD8tlPWbos";
-  async function loadMovies() {
-    const grid = document.getElementById("movie-grid");
-    grid.innerHTML = "<p class='text-muted'>Ładowanie…</p>";
+    </div>
+  </nav>
 
-    try {
-      const res = await fetch("https://api.themoviedb.org/3/movie/popular?language=pl-PL", {
-        headers: {
-          "accept": "application/json",
-          "Authorization": `Bearer ${TOKEN}`
-        }
-      });
+  <main class="container py-4">
+    {% block content %}{% endblock %}
+  </main>
 
-      // Діагностика
-      console.log("status:", res.status, res.statusText);
-      if (!res.ok) {
-        const errText = await res.text();
-        console.error("TMDb error body:", errText);
-        grid.innerHTML = `<p class="text-danger">Błąd ${res.status}: ${res.statusText}</p>`;
-        return;
-      }
-
-      const data = await res.json();
-      grid.innerHTML = "";
-      (data.results || []).slice(0, 8).forEach(m => {
-        const col = document.createElement("div");
-        col.className = "col-lg-3 col-md-6 mb-4";
-        col.innerHTML = `
-          <div class="card h-100 shadow-sm">
-            <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" class="card-img-top" alt="${m.title}">
-            <div class="card-body">
-              <h5 class="card-title">${m.title}</h5>
-              <p class="card-text text-muted">${m.release_date || ""}</p>
-              <a class="btn btn-primary" href="https://www.themoviedb.org/movie/${m.id}" target="_blank">Szczegóły</a>
-            </div>
-          </div>`;
-        grid.appendChild(col);
-      });
-
-      if (!data.results || data.results.length === 0) {
-        grid.innerHTML = `<p class="text-warning">Brak wyników.</p>`;
-      }
-
-    } catch (e) {
-      console.error("Fetch failed:", e);
-      grid.innerHTML = "<p class='text-danger'>Nie udało się załadować filmów (network/CORS).</p>";
-    }
-  }
-
-  loadMovies();
-    </script>
-  </div>
-  {% endblock %}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>
-

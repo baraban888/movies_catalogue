@@ -1,13 +1,11 @@
 import os
-import requests
+import requests,random
 from dotenv import load_dotenv
-import random
-
 load_dotenv()
-API_TOKEN = os.getenv("TMDB_API_TOKEN")
 
 BASE_URL = "https://api.themoviedb.org/3"
-
+API_KEY   = os.getenv("TMDB_API_KEY")
+API_TOKEN = os.getenv("TMDB_API_TOKEN")
 def _headers():
     if not API_TOKEN:
         raise RuntimeError("TMDB_API_TOKEN is not set")
@@ -78,10 +76,17 @@ def get_random_backdrop(movie_id):
 
 def get_poster_url(path, size="w500"):
     if not path:
-        return ""
+        return "https://via.placeholder.com/500x750?text=No+Image"
     return f"https://image.tmdb.org/t/p/{size}{path}"
 
 def get_profile_url(path, size="w185"):
     if not path:
         return ""          # можно вернуть placeholder, если хочешь
     return f"https://image.tmdb.org/t/p/{size}{path}"
+
+def get_tv_today():
+    endpoint = f"{BASE_URL}/tv/airing_today"
+    params = {"api_key": API_KEY}
+    resp = requests.get(endpoint, params=params)
+    resp.raise_for_status()
+    return resp.json()["results"]

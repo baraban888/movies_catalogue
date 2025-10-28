@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for, flash
 import tmdb_client
 
 BASE_DIR = Path(__file__).parent.resolve()
@@ -14,6 +14,7 @@ print("CWD:         ", os.getcwd())
 print("ROOT_PATH:   ", app.root_path)
 print("TEMPLATES:   ", app.jinja_loader.searchpath)
 
+app.secret_key = b"baraban-secret-1975"  
 FAVORITES = set()
 
 MOVIE_LISTS = {"popular": "Popular",
@@ -38,9 +39,12 @@ def homepage():
 @app.route("/add_to_favorites", methods=["POST"])
 def add_to_favorites():
     movie_id = request.form.get("movie_id")
+    movie_title = request.form.get("movie_title", "").strip()
     if movie_id:
         FAVORITES.add(movie_id)
-    return "", 204  # відповідаємо без перезавантаження сторінки
+        msg = f"Dodano film «{movie_title or ('ID ' + movie_id)}» do ulubionych!"
+        flash(msg)
+    return redirect(url_for("homepage"))
 
 @app.route("/favorites")
 def favorites():

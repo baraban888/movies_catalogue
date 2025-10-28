@@ -45,6 +45,7 @@
             <a class="nav-link {% if active_page == 'tv_today' %}active{% endif %}" href="{{ url_for('tv_today') }}">TV Today</a>
           </li>
           <!-- При желании добавьте ещё пункты -->
+
         </ul>
 
         <!-- ЕДИНСТВЕННАЯ поисковая строка (по центру) -->
@@ -55,7 +56,16 @@
       </div>
     </div>
   </nav>
-
+{% with messages = get_flashed_messages() %}
+              {% if messages %}
+                 {% for message in messages %}
+                     <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
   <main class="container py-4">
     {% block content %}{% endblock %}
   </main>

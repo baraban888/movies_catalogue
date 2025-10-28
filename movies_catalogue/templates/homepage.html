@@ -24,10 +24,12 @@
             <h5 class="card-title">{{ m.title }}</h5>
             {% if m.release_date %}<p class="card-text text-muted">{{ m.release_date }}</p>{% endif %}
             <a class="btn btn-primary btn-sm" href="{{ url_for('movie_details', movie_id=m.id) }}">Pokaż więcej</a>
-<form action="/add_to_favorites" method="post" style="display:inline;">
-    <input type="hidden" name="movie_id" value="{{ m.id }}">
-    <button type="submit" class="btn btn-outline-warning btn-sm">⭐</button>
+<form action="{{ url_for('add_to_favorites') }}" method="post" style="display:inline">
+  <input type="hidden" name="movie_id" value="{{ m.id }}">
+  <input type="hidden" name="movie_title" value="{{ m.title }}">
+  <button type="submit" class="btn btn-outline-warning btn-sm">⭐</button>
 </form>
+
 
           </div>
         </div>

@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 from flask import Flask, render_template, request, redirect, url_for, flash
-import tmdb_client
+from movies_catalogue import tmdb_client
 
 BASE_DIR = Path(__file__).parent.resolve()
 

@@ -46,6 +46,14 @@ def get_single_movie(movie_id):
     response.raise_for_status()
     return response.json()
 
+def get_single_movie_cast(movie_id):
+    endpoint = f"{BASE_URL}/movie/{movie_id}/credits"
+    headers = _headers()
+    response = requests.get(endpoint, headers=headers)
+    response.raise_for_status()
+    data = response.json()
+    return data["cast"]
+
 def get_movie_credits(movie_id):
     url = f"{BASE_URL}/movie/{movie_id}"
     resp = requests.get(url, headers=_headers())
@@ -58,8 +66,8 @@ def get_movie_images(movie_id):
     resp.raise_for_status()
     return resp.json()
 
-def get_movies_list(list_name):
-    endpoint = f"{BASE_URL}/movie/{list_name}"
+def get_movies_list(list_type):
+    endpoint = f"{BASE_URL}/movie/{list_type}"
     headers = _headers()
     response = requests.get(endpoint, headers=headers)
     response.raise_for_status()
@@ -74,10 +82,10 @@ def get_random_backdrop(movie_id):
     chosen = random.choice(backdrops)
     return f"https://image.tmdb.org/t/p/w780{chosen['file_path']}"
 
-def get_poster_url(path, size="w500"):
-    if not path:
-        return "https://via.placeholder.com/500x750?text=No+Image"
-    return f"https://image.tmdb.org/t/p/{size}{path}"
+def get_poster_url(poster_api_path, size="w342"):
+    if not poster_api_path:
+        return "https://via.placeholder.com/500x750"
+    return f"https://image.tmdb.org/t/p/{size}{poster_api_path}"
 
 def get_profile_url(path, size="w185"):
     if not path:
